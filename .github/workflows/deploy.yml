@@ -75,7 +75,7 @@ jobs:
         uses: google-github-actions/auth@v1
         with:
           service_account: ${{ secrets.GCP_SERVICE_ACCOUNT }}
-          workload_identity_provider: ${{ secrets.GCP_WORKLOAD_IDENTITY_PROVIDER }}
+          workload_identity_przovider: ${{ secrets.GCP_WORKLOAD_IDENTITY_PROVIDER }}
 
       - name: Set up Cloud SDK
         uses: google-github-actions/setup-gcloud@v1
@@ -83,14 +83,14 @@ jobs:
       - name: Upload to GCS
         uses: google-github-actions/upload-cloud-storage@v1
         with:
-          path: dist
+          path: site
           destination: ${{ secrets.GCP_BUCKET }}
           parent: false
           headers: |-
             cache-control: no-cache
 
       - name: Upload to GCS (sync)
-        run: gsutil rsync -r -d dist gs://${{ secrets.GCP_BUCKET }}
+        run: gsutil rsync -r -d site gs://${{ secrets.GCP_BUCKET }}
 
       - name: Configure GSC Cache
         run: |
