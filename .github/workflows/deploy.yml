@@ -8,17 +8,23 @@ on:
   workflow_dispatch:
 
 jobs:
-  build:
-    runs-on: ubuntu-20.04
+  run:
+    name: Deploy website
+
+    permissions:
+      contents: "read"
+      id-token: "write"
 
     strategy:
       fail-fast: false
       matrix:
+        os: [ubuntu-latest]
         python-version: ["3.10"]
 
+    runs-on: ${{ matrix.os }}
+
     steps:
-      - uses: actions/checkout@v2
-      - run: git fetch --prune --unshallow
+      - uses: actions/checkout@v3
 
       # ------------------------------------------------------------------------
       # Python - Setup
@@ -70,39 +76,41 @@ jobs:
           pip freeze
 
       # ------------------------------------------------------------------------
-      # Python - Build
+      # Build
 
-      - name: Build package
+      - name: Build website
         run: |
           source .venv/bin/activate
           mkdocs build
 
       # ------------------------------------------------------------------------
-      # Release
+      #  Publish
 
       - name: Configure GCP auth
-        uses: google-github-actions/auth@v0
+        uses: google-github-actions/auth@v1
         with:
-          credentials_json: ${{ secrets.GCP_CREDENTIALS }}
+          service_account: ${{ secrets.GCP_SERVICE_ACCOUNT }}
+          workload_identity_provider: ${{ secrets.GCP_WORKLOAD_IDENTITY_PROVIDER }}
 
       - name: Set up Cloud SDK
-        uses: google-github-actions/setup-gcloud@v0
+        uses: google-github-actions/setup-gcloud@v1
 
       - name: Upload to GCS
-        uses: google-github-actions/upload-cloud-storage@v0
+        uses: google-github-actions/upload-cloud-storage@v1
         with:
-          path: site
+          path: dist
           destination: ${{ secrets.GCP_BUCKET }}
           parent: false
           headers: |-
             cache-control: no-cache
 
       - name: Upload to GCS (sync)
-        run: gsutil rsync -r -d site gs://${{ secrets.GCP_BUCKET }}
+        run: gsutil rsync -r -d dist gs://${{ secrets.GCP_BUCKET }}
 
       - name: Configure GSC Cache
         run: |
           gsutil setmeta -r -h "Cache-Control: no-cache" gs://${{ secrets.GCP_BUCKET }}
+
       - name: Purge Cloudflare Cache
         uses: jakejarvis/cloudflare-purge-action@v0.3.0
         env:
