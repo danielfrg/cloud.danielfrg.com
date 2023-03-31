@@ -1,4 +1,44 @@
-site_name: Google Cloud by Daniel Rodriguez
+site_name: Google Cloud Notes
+site_url: https://cloud.danielfrg.com
+site_author: Daniel Rodriguez
+site_description: >-
+  Notes on how I do stuff in Google Cloud
+# repo_url: https://github.com/danielfrg/cloud.danielfrg.com
+copyright: Copyright &copy; 2023 Daniel Rodriguez
+
+nav:
+  - Terraform:
+      - Terraform: terraform/index.md
+      - GitHub Actions with Identity Pools: terraform/ipd-github-actions.md
 
 theme:
   name: material
+  features:
+    - navigation.instant
+    - navigation.tracking
+    - navigation.tabs
+    - content.code.copy
+  palette:
+    - scheme: default
+      toggle:
+        icon: material/weather-night
+        name: Switch to dark mode
+
+    # Palette toggle for dark mode
+    - scheme: slate
+      toggle:
+        icon: material/weather-sunny
+        name: Switch to light mode
+
+markdown_extensions:
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.superfences
+
+plugins:
+  - search
+
+extra:
+  analytics:
+    provider: google
+    property: G-3673QMK9C4
