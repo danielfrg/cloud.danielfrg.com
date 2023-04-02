@@ -95,8 +95,8 @@ jobs:
   deploy:
     # This is needed for the Action token to have access
     permissions:
-      contents: "read"
-      id-token: "write"
+      contents: read
+      id-token: write
 
     steps:
       [... Your steps ...]
