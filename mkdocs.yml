@@ -10,6 +10,7 @@ nav:
   - Terraform:
       - Terraform: terraform/index.md
       - GitHub Actions with Identity Pools: terraform/ipd-github-actions.md
+      - Public GCS Bucket: terraform/gcs-public-bucket.md
 
 theme:
   name: material

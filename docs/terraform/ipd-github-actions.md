@@ -1,6 +1,6 @@
 # Setup an Identity Pool for Github Actions
 
-## Variables:
+## Variables
 
 ```terraform
 variable "project_id" {
