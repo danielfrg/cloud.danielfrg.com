@@ -7,13 +7,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  deploy:
-    name: deploy
-
-    permissions:
-      contents: read
-      id-token: write
-
+  build:
     strategy:
       fail-fast: false
       matrix:
