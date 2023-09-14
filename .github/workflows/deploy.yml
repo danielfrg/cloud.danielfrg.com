@@ -54,43 +54,26 @@ jobs:
           pip --version
           pip freeze
 
-      # ------------------------------------------------------------------------
-      # Build
-
       - name: Build website
         run: |
           mkdocs build
 
-      # ------------------------------------------------------------------------
-      #  Publish
-
-      - name: Configure GCP auth
-        uses: google-github-actions/auth@v1
+      - name: Cache website
+        id: cache-build
+        uses: actions/cache@v3
         with:
-          service_account: ${{ secrets.GCP_SERVICE_ACCOUNT }}
-          workload_identity_provider: ${{ secrets.GCP_WORKLOAD_IDENTITY_PROVIDER }}
+          path: dist
+          key: >
+            dist
+            ${{ github.run_id }}
+            ${{ github.run_attempt }}
 
-      - name: Set up Cloud SDK
-        uses: google-github-actions/setup-gcloud@v1
+  firebase:
+    uses: ./.github/workflows/deploy-firebase.yml
+    needs: [build]
+    secrets: inherit
 
-      - name: Upload to GCS
-        uses: google-github-actions/upload-cloud-storage@v1
-        with:
-          path: site
-          destination: ${{ secrets.GCP_BUCKET }}
-          parent: false
-          headers: |-
-            cache-control: no-cache
-
-      - name: Upload to GCS (sync)
-        run: gsutil -m rsync -r -d site gs://${{ secrets.GCP_BUCKET }}
-
-      - name: Configure GSC Cache
-        run: |
-          gsutil -m setmeta -r -h "Cache-Control: no-cache" gs://${{ secrets.GCP_BUCKET }}
-
-      - name: Purge Cloudflare Cache
-        uses: jakejarvis/cloudflare-purge-action@v0.3.0
-        env:
-          CLOUDFLARE_ZONE: ${{ secrets.CLOUDFLARE_ZONE }}
-          CLOUDFLARE_TOKEN: ${{ secrets.CLOUDFLARE_TOKEN }}
+  post-deploy:
+    uses: ./.github/workflows/deploy-cloudflare.yml
+    needs: [firebase]
+    secrets: inherit
