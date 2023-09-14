@@ -5,6 +5,7 @@ site_description: >-
   Notes on how I do stuff in Google Cloud
 # repo_url: https://github.com/danielfrg/cloud.danielfrg.com
 copyright: Copyright &copy; 2023 Daniel Rodriguez
+site_dir: dist
 
 nav:
   - Terraform:
