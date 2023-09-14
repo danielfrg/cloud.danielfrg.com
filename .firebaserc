@@ -1,5 +1,15 @@
 {
   "projects": {
     "default": "danielfrg-com"
-  }
+  },
+  "targets": {
+    "danielfrg-com": {
+      "hosting": {
+        "cloud": [
+          "cloud-danielfrg-com"
+        ]
+      }
+    }
+  },
+  "etags": {}
 }
