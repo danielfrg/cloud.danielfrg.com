@@ -1,6 +1,6 @@
 {
   "hosting": {
-    "target": "cloud",
+    "site": "cloud-danielfrg-com",
     "public": "dist",
     "ignore": ["firebase.json", "**/.*", "**/node_modules/**"]
   }
